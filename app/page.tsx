@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,8 +22,35 @@ import {
   Users,
   Heart,
 } from "lucide-react";
+import { useState } from "react";
 
 export default function HomePage() {
+  const galleryImages = [
+    { name: "Image 1", src: "/1.jpeg" },
+    { name: "Image 2", src: "/2.jpeg" },
+    { name: "Image 3", src: "/3.jpeg" },
+    { name: "Image 4", src: "/4.jpeg" },
+    { name: "Image 5", src: "/5.jpeg" },
+    { name: "Image 6", src: "/6.jpeg" },
+  ];
+
+  const [startIndex, setStartIndex] = useState(0);
+
+  const prev = () => {
+    setStartIndex((prevIndex) =>
+      prevIndex === 0 ? galleryImages.length - 3 : prevIndex - 3
+    );
+  };
+
+  const next = () => {
+    setStartIndex((prevIndex) =>
+      prevIndex + 3 >= galleryImages.length ? 0 : prevIndex + 3
+    );
+  };
+
+  // Slice 3 images to show based on startIndex
+  const visibleImages = galleryImages.slice(startIndex, startIndex + 3);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -71,6 +101,18 @@ export default function HomePage() {
                 className="text-gray-700 hover:text-blue-600 transition-colors"
               >
                 Treatments
+              </Link>
+              <Link
+                href="#gallery"
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Gallery
+              </Link>
+              <Link
+                href="#certifications"
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Certification
               </Link>
               <Link
                 href="#contact"
@@ -376,6 +418,101 @@ export default function HomePage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="gallery" className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+            Clinic Gallery
+          </h2>
+
+          <div className="flex items-center justify-center gap-4">
+            {/* Left Arrow */}
+            <button
+              onClick={prev}
+              aria-label="Previous"
+              className="p-3 rounded-full bg-white shadow-md hover:bg-gray-100 flex items-center justify-center"
+            >
+              <ArrowLeft className="w-8 h-8 text-gray-600" />
+            </button>
+
+            {/* Images */}
+            {visibleImages.map((img, i) => (
+              <div
+                key={startIndex + i}
+                className="relative w-[3000vw] max-w-[30000px] aspect-[2/3] rounded-lg overflow-hidden shadow-md"
+              >
+                <Image
+                  src={img.src}
+                  alt={img.name}
+                  fill
+                  className="object-cover"
+                  // sizes="(min-width: 768px) 30vw, 100vw"
+                  priority={i === 0}
+                />
+              </div>
+            ))}
+
+            {/* Right Arrow */}
+            <button
+              onClick={next}
+              aria-label="Next"
+              className="p-3 rounded-full bg-white shadow-md hover:bg-gray-100 flex items-center justify-center"
+            >
+              <ArrowRight className="w-8 h-8 text-gray-600" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="certifications" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center space-y-4 mb-16">
+            <Badge className="bg-green-100 text-green-800">
+              Certifications
+            </Badge>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+              Accredited & Certified Professionals
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Our team is fully certified by top industry authorities to ensure
+              the highest standards of safety and quality in every treatment we
+              offer.
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <Card className="group overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+              <CardHeader className="p-0">
+                <div className="w-64 h-auto rounded-t-lg overflow-hidden mx-auto">
+                  <Image
+                    src="/certificate.png" // Make sure path is correct
+                    alt="Clinic Certification"
+                    width={256} // or your preferred size
+                    height={180}
+                    className="object-contain"
+                  />
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                <CardTitle className="text-xl mb-2">
+                  Certified by Health & Beauty Authority
+                </CardTitle>
+                <CardDescription className="text-gray-600 mb-4">
+                  Our clinic is proudly certified and compliant with
+                  international safety standards and advanced aesthetic
+                  procedures.
+                </CardDescription>
+                <Button
+                  variant="outline"
+                  className="w-full border-green-200 text-green-700 hover:bg-green-50 bg-transparent"
+                >
+                  View Certificate
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
